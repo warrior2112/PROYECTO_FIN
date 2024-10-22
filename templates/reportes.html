@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Reportes</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div id="sidebar">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo del Hospital">
+        <h2>Hospital Regional de Lambayeque</h2>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Inicio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/registro_paciente">Registrar Paciente</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/listado_pacientes">Listado de Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/diagnostico">Realizar Diagnóstico</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/historial">Historial de Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/reportes">Reportes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Cerrar Sesión</a>
+            </li>
+        </ul>
+    </div>
+    <div id="content" class="container">
+        <h1>Reportes</h1>
+        <h2>Pacientes con Nódulos</h2>
+        {% for paciente_id, data in pacientes_con_nodulos.items() %}
+            <div class="card my-3">
+                <div class="card-header">
+                    <h3 class="mb-0">{{ data.info.nombre }} {{ data.info.apellido }}</h3>
+                </div>
+                <div class="card-body">
+                    <p><strong>Nombre:</strong> {{ data.info.nombre }}</p>
+                    <p><strong>Apellido:</strong> {{ data.info.apellido }}</p>
+                    <p><strong>Fecha de Nacimiento:</strong> {{ data.info.fecha_nacimiento }}</p>
+                    <p><strong>Género:</strong> {{ data.info.genero }}</p>
+                    
+                    <!-- Mostrar Comorbilidades -->
+                    <h4>Comorbilidades</h4>
+                    <ul>
+                        {% for comorbilidad in data.comorbilidades %}
+                            <li>{{ comorbilidad }}</li>
+                        {% else %}
+                            <li>No se registraron comorbilidades.</li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <h4>Predicciones:</h4>
+                    <ul>
+                        {% for pred in data.predicciones %}
+                            <li>
+                                {{ pred.filename }} - {{ pred.resultado }} (Confianza: {{ pred.confianza }})<br>
+                                <img src="{{ url_for('uploaded_file', filename=pred.annotated_image) }}" alt="Imagen Anotada" width="300">
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+        
+        <h2>Gráfico de Pacientes con y sin Nódulos</h2>
+        <div>
+            <img src="{{ url_for('grafico_pacientes_nodulos') }}" alt="Gráfico de Pacientes con y sin Nódulos">
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Reporte de Predicciones - {{ paciente.nombre }} {{ paciente.apellido }}</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div id="sidebar">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo del Hospital">
+        <h2>Hospital Regional de Lambayeque</h2>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Inicio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/registro_paciente">Registrar Paciente</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/listado_pacientes">Listado de Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/diagnostico">Realizar Diagnóstico</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/historial">Historial de Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/reportes">Reportes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Cerrar Sesión</a>
+            </li>
+        </ul>
+    </div>
+    <div id="content" class="container">
+        <h1>Reporte de Predicciones</h1>
+        <h2>{{ paciente.nombre }} {{ paciente.apellido }}</h2>
+        <p><strong>Fecha de Nacimiento:</strong> {{ paciente.fecha_nacimiento }}</p>
+        <p><strong>Género:</strong> {{ paciente.genero }}</p>
+
+        <!-- Mostrar Comorbilidades -->
+        <h3>Comorbilidades</h3>
+        <ul>
+            {% for comorbilidad in comorbilidades %}
+                <li>{{ comorbilidad }}</li>
+            {% else %}
+                <li>No se registraron comorbilidades.</li>
+            {% endfor %}
+        </ul>
+
+        <h3>Historial de Imágenes</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Archivo</th>
+                    <th>Resultado</th>
+                    <th>Confianza</th>
+                    <th>Imagen Anotada</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prediccion in predicciones %}
+                <tr>
+                    <td>{{ prediccion.fecha }}</td>
+                    <td>{{ prediccion.filename }}</td>
+                    <td>{{ prediccion.resultado }}</td>
+                    <td>{{ prediccion.confianza }}</td>
+                    <td><img src="{{ url_for('uploaded_file', filename=prediccion.annotated_image) }}" alt="Imagen Anotada" width="100"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
+
+

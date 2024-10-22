@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Resultados Múltiples</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div id="sidebar">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo del Hospital">
+        <h2>Hospital Regional de Lambayeque</h2>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Inicio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/registro_paciente">Registrar Paciente</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/listado_pacientes">Listado de Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/diagnostico">Realizar Diagnóstico</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/historial">Historial de Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/reportes">Reportes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Cerrar Sesión</a>
+            </li>
+        </ul>
+    </div>
+    <div id="content" class="container">
+        <h1>Resultados Múltiples</h1>
+        <h2>Paciente: {{ paciente_id }}</h2>
+        {% for resultado in resultados %}
+            <div class="result">
+                <h3>Archivo: {{ resultado.filename }}</h3>
+                <p>
+                    Predicción: 
+                    <strong 
+                        class="{% if resultado.confianza > 0.9 %}text-success{% else %}text-danger{% endif %}">
+                        {{ resultado.resultado }} (Confianza: {{ resultado.confianza | round(2) }})
+                    </strong>
+                </p>
+                
+                <div class="img-container">
+                    <img src="{{ url_for('uploaded_file', filename=resultado.annotated_image) }}" alt="Imagen anotada">
+                    <a href="{{ url_for('uploaded_file', filename=resultado.annotated_image) }}" download="annotated_image.png" class="btn btn-info btn-sm mt-2">Descargar</a>
+                </div>
+            </div>
+        {% endfor %}
+        <a href="{{ url_for('historial') }}" class="btn btn-primary mt-3">Ver Historial Completo</a>
+    </div>
+</body>
+</html>
+
+

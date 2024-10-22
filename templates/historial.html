@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Historial de Pacientes</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div id="sidebar">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo del Hospital">
+        <h2>Hospital Regional de Lambayeque</h2>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Inicio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/registro_paciente">Registrar Paciente</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/listado_pacientes">Listado de Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/diagnostico">Realizar Diagnóstico</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link active" href="/historial">Historial de Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/reportes">Reportes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Cerrar Sesión</a>
+            </li>
+        </ul>
+    </div>
+    <div id="content" class="container">
+        <h1>Historial de Pacientes</h1>
+        <div id="accordion">
+            {% for paciente_id, data in historial_pacientes.items() %}
+                <div class="card my-3">
+                    <div class="card-header" id="heading{{ loop.index }}">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                                {{ paciente_id }}
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="heading{{ loop.index }}" data-parent="#accordion">
+                        <div class="card-body">
+                            <p><strong>Nombre:</strong> {{ data.info.nombre }}</p>
+                            <p><strong>Apellido:</strong> {{ data.info.apellido }}</p>
+                            <p><strong>Fecha de Nacimiento:</strong> {{ data.info.fecha_nacimiento }}</p>
+                            <p><strong>Género:</strong> {{ data.info.genero }}</p>
+    
+                            <!-- Mostrar las comorbilidades -->
+                            <h4>Comorbilidades:</h4>
+                            <ul>
+                                {% for comorbilidad in data.comorbilidades %}
+                                    <li>{{ comorbilidad }}</li>
+                                {% endfor %}
+                            </ul>
+    
+                            <h4>Predicciones:</h4>
+                            <ul>
+                                {% for pred in data.predicciones %}
+                                    <li>{{ pred.filename }} - {{ pred.resultado }} (Confianza: {{ pred.confianza }}) 
+                                    <a href="{{ url_for('uploaded_file', filename=pred.annotated_image) }}" target="_blank">Ver Imagen</a></li>
+                                {% endfor %}
+                            </ul>
+                            <a href="{{ url_for('editar_paciente', paciente_id=paciente_id) }}" class="btn btn-warning">Editar</a>
+                            
+                            <form action="{{ url_for('eliminar_paciente', paciente_id=paciente_id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                            <a href="{{ url_for('reporte_paciente', paciente_id=paciente_id) }}" class="btn btn-primary">Ver Reporte Completo</a> 
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+</body>
+</html>
+
+
+

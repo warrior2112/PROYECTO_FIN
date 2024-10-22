@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Listado de Pacientes</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div id="sidebar">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo del Hospital">
+        <h2>Hospital Regional de Lambayeque</h2>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Inicio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/registro_paciente">Registrar Paciente</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/listado_pacientes">Listado de Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/diagnostico">Realizar Diagnóstico</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/historial">Historial de Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/reportes">Reportes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Cerrar Sesión</a>
+            </li>
+        </ul>
+    </div>
+    <div id="content" class="container">
+        <h1>Listado de Pacientes</h1>
+
+        <!-- Barra de búsqueda -->
+        <form method="GET" class="mb-3">
+            <input type="text" name="search" class="form-control" placeholder="Buscar por nombre o apellido...">
+        </form>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Género</th>
+                    <th>Comorbilidades</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paciente in pacientes %}
+                    <tr>
+                        <td>{{ paciente.nombre }}</td>
+                        <td>{{ paciente.apellido }}</td>
+                        <td>{{ paciente.fecha_nacimiento }}</td>
+                        <td>{{ paciente.genero }}</td>
+                        <td>{{ paciente.comorbilidades | join(', ') }}</td>
+                        <td class="btn-group">
+                            <a href="{{ url_for('editar_paciente', paciente_id=paciente.nombre + ' ' + paciente.apellido) }}" class="btn btn-primary btn-sm">Editar</a>
+                            <form action="{{ url_for('eliminar_paciente', paciente_id=paciente.nombre + ' ' + paciente.apellido) }}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                            <a href="{{ url_for('upload_multiple_files_historial') }}" class="btn btn-secondary btn-sm">Subir Imágenes</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+

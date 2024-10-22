@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Inicio</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <style>
+        #content img {
+            width: 50%; 
+            height: auto;
+            margin: 20px 0;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo del Hospital">
+        <h2>Hospital Regional de Lambayeque</h2>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="/">Inicio</a>
+            </li>    
+            <li class="nav-item">
+                <a class="nav-link" href="/registro_paciente">Registrar Paciente</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/listado_pacientes">Listado de Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/diagnostico">Realizar Diagnóstico</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/historial">Historial de Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/reportes">Reportes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Cerrar Sesión</a>
+            </li>
+        </ul>
+    </div>
+    <div id="content" class="container">
+        <h1>Bienvenido al Hospital Regional de Lambayeque</h1>
+        <img src="{{ url_for('static', filename='hospital.jpg') }}" alt="Hospital">
+        <h3>Presentación</h3>
+        <p>El Hospital Regional Lambayeque, es una de las instituciones de mayor importancia y complejidad de la Región Lambayeque, tanto que constituye un Hospital con nivel III-1, es decir nosocomio de ALTA COMPLEJIDAD.</p>
+        
+        <h3>Misión</h3>
+        <p>Somos el Hospital Regional Lambayeque de alta complejidad que brinda servicios integrales de salud, con calidad, equidad y eficiencia, con personal calificado, competente y comprometido, desarrollando Investigación y Docencia, contribuyendo a mejorar la calidad de vida de las personas.</p>
+        
+        <h3>Visión</h3>
+        <p>Ser al 2025 un hospital docente y de investigación, líder, competitivo y reconocido a nivel nacional e internacional, que satisface las necesidades de salud de las personas.</p>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

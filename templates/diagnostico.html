@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Realizar Diagnóstico</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <style>
+        .dicom-preview canvas {
+            border: 1px solid #ccc;
+            margin: 10px;
+            max-width: 100%;
+        }
+        .dicom-preview .image-container {
+            margin: 10px auto;
+        }
+    </style>
+    <script src="https://unpkg.com/cornerstone-core@2.3.0/dist/cornerstone.min.js"></script>
+    <script src="https://unpkg.com/cornerstone-tools@4.17.0/dist/cornerstoneTools.min.js"></script>
+    <script src="https://unpkg.com/cornerstone-wado-image-loader@3.0.2/dist/cornerstoneWADOImageLoader.min.js"></script>
+    <script src="https://unpkg.com/dicom-parser@1.8.4/dist/dicomParser.min.js"></script>
+</head>
+<body>
+    <div id="sidebar">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo del Hospital">
+        <h2>Hospital Regional de Lambayeque</h2>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Inicio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/registro_paciente">Registrar Paciente</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/listado_pacientes">Listado de Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/diagnostico">Realizar Diagnóstico</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/historial">Historial de Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/reportes">Reportes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Cerrar Sesión</a>
+            </li>
+        </ul>
+    </div>
+    <div id="content" class="container">
+        <h1>Realizar Diagnóstico</h1>
+        <!-- Bloque para mostrar mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alert-container">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+        <form id="dicomForm" action="/upload_multiple_historial" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="paciente_id">Seleccione el Paciente</label>
+                <select class="form-control" id="paciente_id" name="paciente_id" required>
+                    <option value="" disabled selected>Seleccione un paciente</option>
+                    {% for paciente in pacientes %}
+                        <option value="{{ paciente.nombre }} {{ paciente.apellido }}">{{ paciente.nombre }} {{ paciente.apellido }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="files">Seleccionar archivos DICOM</label>
+                <input type="file" class="form-control-file" id="files" name="files" multiple required>
+            </div>
+            <div id="dicom-preview" class="form-group dicom-preview">
+                <!-- Aquí se mostrarán las vistas previas -->
+            </div>
+            <button type="submit" class="btn btn-primary">Subir</button>
+            <button type="button" class="btn btn-secondary" id="cancelButton">Cancelar</button>
+        </form>
+    </div>
+
+    <script>
+        // Inicializar cornerstone
+        cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
+        cornerstoneWADOImageLoader.configure({
+            beforeSend: function(xhr) {
+                // Add custom headers here (e.g. auth tokens)
+            },
+            useWebWorkers: true
+        });
+
+        document.getElementById('files').addEventListener('change', function(event) {
+            const files = event.target.files;
+            const previewContainer = document.getElementById('dicom-preview');
+            previewContainer.innerHTML = ''; // Clear previous content
+
+            Array.from(files).forEach(file => {
+                const imageId = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
+                const element = document.createElement('div');
+                element.style.width = '512px';
+                element.style.height = '512px';
+                element.classList.add('image-container');
+                previewContainer.appendChild(element);
+
+                cornerstone.enable(element);
+                cornerstone.loadImage(imageId).then(function(image) {
+                    cornerstone.displayImage(element, image);
+                }).catch(function(err) {
+                    console.error('Error al cargar la imagen DICOM', err);
+                });
+            });
+        });
+
+        document.getElementById('cancelButton').addEventListener('click', function() {
+            document.getElementById('files').value = '';
+            document.getElementById('dicom-preview').innerHTML = '';
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
